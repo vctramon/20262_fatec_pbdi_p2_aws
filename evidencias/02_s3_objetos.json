@@ -1,0 +1,28 @@
+{
+    "Contents": [
+        {
+            "Key": "bruto/",
+            "LastModified": "2026-11-20T13:38:57+00:00",
+            "ETag": "\"d41d8cd98f00b204e9800998ecf8427e\"",
+            "ChecksumAlgorithm": [
+                "CRC32"
+            ],
+            "ChecksumType": "FULL_OBJECT",
+            "Size": 0,
+            "StorageClass": "STANDARD"
+        },
+        {
+            "Key": "bruto/superstore_sales.csv",
+            "LastModified": "2026-11-20T13:45:37+00:00",
+            "ETag": "\"3459dd58d4fc74f6ba8922499ded7d78\"",
+            "ChecksumAlgorithm": [
+                "CRC64NVME"
+            ],
+            "ChecksumType": "FULL_OBJECT",
+            "Size": 2129689,
+            "StorageClass": "STANDARD"
+        }
+    ],
+    "RequestCharged": null,
+    "Prefix": ""
+}
