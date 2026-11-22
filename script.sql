@@ -178,3 +178,139 @@ CREATE INDEX IF NOT EXISTS idx_fact_location_sk
  
 CREATE INDEX IF NOT EXISTS idx_fact_ship_mode_sk
     ON dw.fact_sales(ship_mode_sk);
+
+-- Enunciado 14
+CREATE OR REPLACE PROCEDURE dw.carrega_dw()
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_inseridos BIGINT;
+    v_fato BIGINT;
+    v_staging BIGINT;
+BEGIN
+
+    TRUNCATE TABLE
+        dw.fact_sales,
+        dw.dim_customer,
+        dw.dim_product,
+        dw.dim_location,
+        dw.dim_ship_mode
+    RESTART IDENTITY;
+ 
+ 
+    INSERT INTO dw.dim_customer (
+        customer_id, customer_name, segment
+    )
+    SELECT
+        customer_id,
+        MIN(customer_name),
+        MIN(segment)
+    FROM staging.sales
+    GROUP BY customer_id
+    ORDER BY customer_id;
+ 
+    GET DIAGNOSTICS v_inseridos = ROW_COUNT;
+    RAISE NOTICE 'dim_customer: % linhas', v_inseridos;
+ 
+    INSERT INTO dw.dim_product (
+        product_id, product_name, category, sub_category
+    )
+    SELECT
+        product_id,
+        MIN(product_name),
+        MIN(category),
+        MIN(sub_category)
+    FROM staging.sales
+    GROUP BY product_id
+    ORDER BY product_id;
+ 
+    GET DIAGNOSTICS v_inseridos = ROW_COUNT;
+    RAISE NOTICE 'dim_product: % linhas', v_inseridos;
+ 
+    INSERT INTO dw.dim_location (
+        country, state, city, postal_code, region
+    )
+    SELECT
+        country,
+        state,
+        city,
+        postal_code,
+        MIN(region)
+    FROM staging.sales
+    GROUP BY country, state, city, postal_code
+    ORDER BY country, state, city, postal_code;
+ 
+    GET DIAGNOSTICS v_inseridos = ROW_COUNT;
+    RAISE NOTICE 'dim_location: % linhas', v_inseridos;
+
+    INSERT INTO dw.dim_ship_mode (ship_mode)
+    SELECT DISTINCT ship_mode
+    FROM staging.sales
+    ORDER BY ship_mode;
+ 
+    GET DIAGNOSTICS v_inseridos = ROW_COUNT;
+    RAISE NOTICE 'dim_ship_mode: % linhas', v_inseridos;
+ 
+    INSERT INTO dw.fact_sales (
+        row_nk, order_nk,
+        order_date_sk, ship_date_sk,
+        customer_sk, product_sk,
+        location_sk, ship_mode_sk,
+        sales, ship_days
+    )
+    SELECT
+        s.row_id,
+        s.order_id,
+        TO_CHAR(s.order_date, 'YYYYMMDD')::INTEGER,
+        TO_CHAR(s.ship_date, 'YYYYMMDD')::INTEGER,
+        c.customer_sk,
+        p.product_sk,
+        l.location_sk,
+        m.ship_mode_sk,
+        s.sales,
+        s.ship_date - s.order_date
+    FROM staging.sales s
+    JOIN dw.dim_customer c
+        ON c.customer_id = s.customer_id
+    JOIN dw.dim_product p
+        ON p.product_id = s.product_id
+    JOIN dw.dim_location l
+        ON l.country = s.country
+        AND l.state = s.state
+        AND l.city = s.city
+        AND l.postal_code = s.postal_code
+    JOIN dw.dim_ship_mode m
+        ON m.ship_mode = s.ship_mode
+    ORDER BY s.row_id;
+ 
+    GET DIAGNOSTICS v_inseridos = ROW_COUNT;
+    RAISE NOTICE 'fact_sales: % linhas', v_inseridos;
+ 
+    SELECT COUNT(*) INTO v_fato
+    FROM dw.fact_sales;
+ 
+    SELECT COUNT(*) INTO v_staging
+    FROM staging.sales;
+ 
+    IF v_fato <> v_staging THEN
+        RAISE EXCEPTION
+            'Divergência: fato=%; staging=%',
+            v_fato, v_staging;
+    END IF;
+ 
+    RAISE NOTICE
+        'Carga validada: fato=% e staging=%',
+        v_fato, v_staging;
+END;
+$$;
+
+-- Resposta do Enunciado 14
+-- tabela     | linhas 
+-- ---------------+--------
+-- dim_customer  |    793
+-- dim_product   |   1861
+-- dim_location  |    628
+-- dim_ship_mode |      4
+-- fact_sales    |   9800
+-- (5 rows)
+
