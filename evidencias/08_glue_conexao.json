@@ -1,0 +1,32 @@
+{
+    "Connection": {
+        "Name": "conn-rds-superstore-2041382521009",
+        "Description": "",
+        "ConnectionType": "POSTGRESQL",
+        "ConnectionProperties": {
+            "HOST": "dw-superstore-2041382521009.cworurfezn9c.us-east-1.rds.amazonaws.com",
+            "ROLE_ARN": "arn:aws:iam::013482597884:role/LabRole",
+            "DATABASE": "superstore_dw",
+            "PORT": "5432",
+            "KAFKA_SSL_ENABLED": "false"
+        },
+        "PhysicalConnectionRequirements": {
+            "SubnetId": "subnet-0758ca992ed8eceb4",
+            "SecurityGroupIdList": [
+                "sg-0514aa434dd5bfb9f"
+            ],
+            "AvailabilityZone": "us-east-1a"
+        },
+        "CreationTime": "2026-11-20T20:54:15.361000+00:00",
+        "LastUpdatedTime": "2026-11-20T20:54:15.361000+00:00",
+        "Status": "READY",
+        "AuthenticationConfiguration": {
+            "AuthenticationType": "BASIC",
+            "SecretArn": "arn:aws:secretsmanager:us-east-1:013482597884:secret:glue!013482597884-conn-rds-superstore-2041382521009-1795208054916-v6qdiv"
+        },
+        "ConnectionSchemaVersion": 2,
+        "CompatibleComputeEnvironments": [
+            "SPARK"
+        ]
+    }
+}

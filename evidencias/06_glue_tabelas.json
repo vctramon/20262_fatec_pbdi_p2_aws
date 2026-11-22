@@ -1,0 +1,425 @@
+{
+    "TableList": [
+        {
+            "Name": "bruto",
+            "DatabaseName": "superstore_catalog",
+            "Owner": "owner",
+            "CreateTime": "2026-11-20T21:21:25+00:00",
+            "UpdateTime": "2026-11-20T21:21:25+00:00",
+            "LastAccessTime": "2026-11-20T21:21:25+00:00",
+            "Retention": 0,
+            "StorageDescriptor": {
+                "Columns": [
+                    {
+                        "Name": "row id",
+                        "Type": "bigint"
+                    },
+                    {
+                        "Name": "order id",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "order date",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "ship date",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "ship mode",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "customer id",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "customer name",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "segment",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "country",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "city",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "state",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "postal code",
+                        "Type": "bigint"
+                    },
+                    {
+                        "Name": "region",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "product id",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "category",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "sub-category",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "product name",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "sales",
+                        "Type": "double"
+                    }
+                ],
+                "Location": "s3://pbdi-2041382521009-superstore/bruto/",
+                "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+                "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+                "Compressed": false,
+                "NumberOfBuckets": -1,
+                "SerdeInfo": {
+                    "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+                    "Parameters": {
+                        "field.delim": ","
+                    }
+                },
+                "BucketColumns": [],
+                "SortColumns": [],
+                "Parameters": {
+                    "skip.header.line.count": "1",
+                    "sizeKey": "2129689",
+                    "objectCount": "1",
+                    "UPDATED_BY_CRAWLER": "crawler-superstore-2041382521009",
+                    "recordCount": "10648",
+                    "CrawlerSchemaSerializerVersion": "1.0",
+                    "averageRecordSize": "200",
+                    "compressionType": "none",
+                    "CrawlerSchemaDeserializerVersion": "1.0",
+                    "classification": "csv",
+                    "columnsOrdered": "true",
+                    "delimiter": ",",
+                    "areColumnsQuoted": "false",
+                    "CRAWL_RUN_ID": "56beba10-98ea-43ee-93ba-6727d94e2163",
+                    "typeOfData": "file"
+                },
+                "StoredAsSubDirectories": false
+            },
+            "PartitionKeys": [],
+            "TableType": "EXTERNAL_TABLE",
+            "Parameters": {
+                "skip.header.line.count": "1",
+                "sizeKey": "2129689",
+                "objectCount": "1",
+                "UPDATED_BY_CRAWLER": "crawler-superstore-2041382521009",
+                "recordCount": "10648",
+                "CrawlerSchemaSerializerVersion": "1.0",
+                "averageRecordSize": "200",
+                "compressionType": "none",
+                "CrawlerSchemaDeserializerVersion": "1.0",
+                "classification": "csv",
+                "columnsOrdered": "true",
+                "delimiter": ",",
+                "areColumnsQuoted": "false",
+                "CRAWL_RUN_ID": "56beba10-98ea-43ee-93ba-6727d94e2163",
+                "typeOfData": "file"
+            },
+            "CreatedBy": "arn:aws:sts::013482597884:assumed-role/LabRole/AWS-Crawler",
+            "IsRegisteredWithLakeFormation": false,
+            "CatalogId": "013482597884",
+            "VersionId": "0",
+            "IsMultiDialectView": false,
+            "IsMaterializedView": false
+        },
+        {
+            "Name": "pbdi_2041382521009_superstore",
+            "DatabaseName": "superstore_catalog",
+            "Owner": "owner",
+            "CreateTime": "2026-11-20T20:13:09+00:00",
+            "UpdateTime": "2026-11-20T20:13:10+00:00",
+            "LastAccessTime": "2026-11-20T20:13:10+00:00",
+            "Retention": 0,
+            "StorageDescriptor": {
+                "Columns": [
+                    {
+                        "Name": "row id",
+                        "Type": "bigint"
+                    },
+                    {
+                        "Name": "order id",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "order date",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "ship date",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "ship mode",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "customer id",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "customer name",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "segment",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "country",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "city",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "state",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "postal code",
+                        "Type": "bigint"
+                    },
+                    {
+                        "Name": "region",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "product id",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "category",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "sub-category",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "product name",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "sales",
+                        "Type": "double"
+                    }
+                ],
+                "Location": "s3://pbdi-2041382521009-superstore/",
+                "InputFormat": "org.apache.hadoop.mapred.TextInputFormat",
+                "OutputFormat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+                "Compressed": false,
+                "NumberOfBuckets": -1,
+                "SerdeInfo": {
+                    "SerializationLibrary": "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe",
+                    "Parameters": {
+                        "field.delim": ","
+                    }
+                },
+                "BucketColumns": [],
+                "SortColumns": [],
+                "Parameters": {
+                    "skip.header.line.count": "1",
+                    "sizeKey": "2129689",
+                    "objectCount": "1",
+                    "UPDATED_BY_CRAWLER": "crawler-superstore-2041382521009",
+                    "recordCount": "10648",
+                    "CrawlerSchemaSerializerVersion": "1.0",
+                    "averageRecordSize": "200",
+                    "partition_filtering.enabled": "true",
+                    "compressionType": "none",
+                    "CrawlerSchemaDeserializerVersion": "1.0",
+                    "classification": "csv",
+                    "columnsOrdered": "true",
+                    "delimiter": ",",
+                    "areColumnsQuoted": "false",
+                    "CRAWL_RUN_ID": "8309a926-3d09-4d14-9098-2bc50f5ed69c",
+                    "typeOfData": "file"
+                },
+                "StoredAsSubDirectories": false
+            },
+            "PartitionKeys": [
+                {
+                    "Name": "partition_0",
+                    "Type": "string"
+                }
+            ],
+            "TableType": "EXTERNAL_TABLE",
+            "Parameters": {
+                "skip.header.line.count": "1",
+                "sizeKey": "2129689",
+                "objectCount": "1",
+                "UPDATED_BY_CRAWLER": "crawler-superstore-2041382521009",
+                "recordCount": "10648",
+                "CrawlerSchemaSerializerVersion": "1.0",
+                "averageRecordSize": "200",
+                "partition_filtering.enabled": "true",
+                "compressionType": "none",
+                "CrawlerSchemaDeserializerVersion": "1.0",
+                "classification": "csv",
+                "columnsOrdered": "true",
+                "delimiter": ",",
+                "areColumnsQuoted": "false",
+                "CRAWL_RUN_ID": "8309a926-3d09-4d14-9098-2bc50f5ed69c",
+                "typeOfData": "file"
+            },
+            "CreatedBy": "arn:aws:sts::013482597884:assumed-role/LabRole/AWS-Crawler",
+            "IsRegisteredWithLakeFormation": false,
+            "CatalogId": "013482597884",
+            "VersionId": "1",
+            "IsMultiDialectView": false,
+            "IsMaterializedView": false
+        },
+        {
+            "Name": "superstore_dw_staging_sales",
+            "DatabaseName": "superstore_catalog",
+            "Owner": "owner",
+            "CreateTime": "2026-11-20T21:08:25+00:00",
+            "UpdateTime": "2026-11-20T21:08:25+00:00",
+            "LastAccessTime": "2026-11-20T21:08:25+00:00",
+            "Retention": 0,
+            "StorageDescriptor": {
+                "Columns": [
+                    {
+                        "Name": "country",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "city",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "sub_category",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "product_name",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "sales",
+                        "Type": "decimal(12,2)"
+                    },
+                    {
+                        "Name": "order_date",
+                        "Type": "date"
+                    },
+                    {
+                        "Name": "ship_mode",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "segment",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "product_id",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "customer_name",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "state",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "row_id",
+                        "Type": "int"
+                    },
+                    {
+                        "Name": "customer_id",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "postal_code",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "region",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "category",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "order_id",
+                        "Type": "string"
+                    },
+                    {
+                        "Name": "ship_date",
+                        "Type": "date"
+                    }
+                ],
+                "Location": "superstore_dw.staging.sales",
+                "Compressed": false,
+                "NumberOfBuckets": -1,
+                "SerdeInfo": {
+                    "Parameters": {}
+                },
+                "BucketColumns": [],
+                "SortColumns": [],
+                "Parameters": {
+                    "crawler.lineage.database": "superstore_dw",
+                    "crawler.lineage.schema": "staging",
+                    "UPDATED_BY_CRAWLER": "crawler-staging-2041382521009",
+                    "CrawlerSchemaSerializerVersion": "1.0",
+                    "crawler.lineage.host": "dw-superstore-2041382521009.cworurfezn9c.us-east-1.rds.amazonaws.com",
+                    "compressionType": "none",
+                    "CrawlerSchemaDeserializerVersion": "1.0",
+                    "classification": "postgresql",
+                    "crawler.lineage.port": "5432",
+                    "crawler.lineage.database_vendor": "postgresql",
+                    "CRAWL_RUN_ID": "82111fa1-65c9-41fd-a28b-de94c52db5b1",
+                    "connectionName": "conn-rds-superstore-2041382521009",
+                    "typeOfData": "table"
+                },
+                "StoredAsSubDirectories": false
+            },
+            "PartitionKeys": [],
+            "TableType": "EXTERNAL_TABLE",
+            "Parameters": {
+                "crawler.lineage.database": "superstore_dw",
+                "crawler.lineage.schema": "staging",
+                "UPDATED_BY_CRAWLER": "crawler-staging-2041382521009",
+                "CrawlerSchemaSerializerVersion": "1.0",
+                "crawler.lineage.host": "dw-superstore-2041382521009.cworurfezn9c.us-east-1.rds.amazonaws.com",
+                "compressionType": "none",
+                "CrawlerSchemaDeserializerVersion": "1.0",
+                "classification": "postgresql",
+                "crawler.lineage.port": "5432",
+                "crawler.lineage.database_vendor": "postgresql",
+                "CRAWL_RUN_ID": "82111fa1-65c9-41fd-a28b-de94c52db5b1",
+                "connectionName": "conn-rds-superstore-2041382521009",
+                "typeOfData": "table"
+            },
+            "CreatedBy": "arn:aws:sts::013482597884:assumed-role/LabRole/AWS-Crawler",
+            "IsRegisteredWithLakeFormation": false,
+            "CatalogId": "013482597884",
+            "VersionId": "0",
+            "IsMultiDialectView": false,
+            "IsMaterializedView": false
+        }
+    ]
+}

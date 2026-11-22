@@ -31,3 +31,10 @@ O Amazon S3 utiliza um endpoint Gateway porque permite o acesso privado aos buck
 O AWS STS e o Secrets Manager utilizam endpoints Interface porque disponibilizam seus serviços por meio de interfaces de rede privadas dentro da VPC, utilizando AWS PrivateLink.
 O DNS privado permite que os endereços habituais desses serviços sejam resolvidos para os endereços IP privados dos endpoints.
 Se o DNS privado estiver desabilitado, o job do AWS Glue poderá tentar acessar os endpoints públicos. Como a rede do projeto não utiliza NAT Gateway, essas chamadas poderão falhar por falta de conectividade, impedindo a obtenção de credenciais temporárias ou o acesso às credenciais do banco.
+
+### Enunciado 7 — Tipos inferidos pelo crawler
+row id: bigint, O crawler identificou números inteiros e atribuiu um tipo inteiro de 64 bits.
+
+postal code: bigint, O crawler interpretou os valores como numéricos. Entretanto, códigos postais são identificados e devem ser armazenados como texto para preservar zeros à esquerda e representar ausências.
+
+sales: double, O crawler identificou valores decimais de ponto flutuante, Na staging, os valores monetários serão convertidos para NUMERIC(12,2), garantindo precisão decimal de duas casas.
