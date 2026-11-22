@@ -1,0 +1,253 @@
+{
+    "Job": {
+        "Name": "Job-superstore-etl-2041382521009",
+        "JobMode": "VISUAL",
+        "JobRunQueuingEnabled": false,
+        "Description": "",
+        "Role": "arn:aws:iam::013482597884:role/LabRole",
+        "CreatedOn": "2026-11-22T15:29:22.198000+00:00",
+        "LastModifiedOn": "2026-11-22T15:29:22.198000+00:00",
+        "ExecutionProperty": {
+            "MaxConcurrentRuns": 1
+        },
+        "Command": {
+            "Name": "glueetl",
+            "ScriptLocation": "s3://aws-glue-assets-013482597884-us-east-1/scripts/Job-superstore-etl-2041382521009.py",
+            "PythonVersion": "3"
+        },
+        "DefaultArguments": {
+            "--enable-metrics": "",
+            "--enable-spark-ui": "true",
+            "--spark-event-logs-path": "s3://aws-glue-assets-013482597884-us-east-1/sparkHistoryLogs/",
+            "--enable-job-insights": "true",
+            "--enable-observability-metrics": "true",
+            "--conf": "spark.eventLog.rolling.enabled=true --conf spark.sql.catalog.glue_catalog.glue.skip-name-validation=true",
+            "--enable-glue-datacatalog": "",
+            "--enable-continuous-cloudwatch-log": "true",
+            "--job-bookmark-option": "job-bookmark-disable",
+            "--job-language": "python",
+            "--TempDir": "s3://aws-glue-assets-013482597884-us-east-1/temporary/"
+        },
+        "Connections": {
+            "Connections": [
+                "conn-rds-superstore-2041382521009"
+            ]
+        },
+        "MaxRetries": 0,
+        "AllocatedCapacity": 2,
+        "Timeout": 480,
+        "MaxCapacity": 2.0,
+        "WorkerType": "G.1X",
+        "NumberOfWorkers": 2,
+        "GlueVersion": "6.0",
+        "CodeGenConfigurationNodes": {
+            "node-1795360315599": {
+                "S3CatalogSource": {
+                    "Name": "Amazon S3",
+                    "Database": "superstore_catalog",
+                    "Table": "bruto",
+                    "PartitionPredicate": "",
+                    "AdditionalOptions": {}
+                }
+            },
+            "node-1795360988398": {
+                "PostgreSQLCatalogTarget": {
+                    "Name": "PostgreSQL",
+                    "Inputs": [
+                        "node-1795360704773"
+                    ],
+                    "Database": "superstore_catalog",
+                    "Table": "superstore_dw_staging_sales"
+                }
+            },
+            "node-1795360704773": {
+                "SparkSQL": {
+                    "Name": "SQL Query",
+                    "Inputs": [
+                        "node-1795360546775"
+                    ],
+                    "SqlQuery": "SELECT\n CAST(trim(row_id) AS INT) AS row_id,\n trim(order_id) AS order_id,\n to_date(trim(order_date), 'dd/MM/yyyy') AS order_date,\n to_date(trim(ship_date), 'dd/MM/yyyy') AS ship_date,\n trim(ship_mode) AS ship_mode,\n trim(customer_id) AS customer_id,\n trim(customer_name) AS customer_name,\n trim(segment) AS segment,\n trim(country) AS country,\n trim(city) AS city,\n trim(state) AS state,\n coalesce(nullif(trim(postal_code), ''), 'N/D') AS postal_code,\n trim(region) AS region,\n trim(product_id) AS product_id,\n trim(category) AS category,\n trim(sub_category) AS sub_category,\n trim(product_name) AS product_name,\n CAST(trim(sales) AS DECIMAL(12, 2)) AS sales\nFROM myDataSource\n ",
+                    "SqlAliases": [
+                        {
+                            "From": "node-1795360546775",
+                            "Alias": "myDataSource"
+                        }
+                    ]
+                }
+            },
+            "node-1795360546775": {
+                "ApplyMapping": {
+                    "Name": "Change Schema",
+                    "Inputs": [
+                        "node-1795360315599"
+                    ],
+                    "Mapping": [
+                        {
+                            "ToKey": "row_id",
+                            "FromPath": [
+                                "row id"
+                            ],
+                            "FromType": "long",
+                            "ToType": "long",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "order_id",
+                            "FromPath": [
+                                "order id"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "order_date",
+                            "FromPath": [
+                                "order date"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "ship_date",
+                            "FromPath": [
+                                "ship date"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "ship_mode",
+                            "FromPath": [
+                                "ship mode"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "customer_id",
+                            "FromPath": [
+                                "customer id"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "customer_name",
+                            "FromPath": [
+                                "customer name"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "segment",
+                            "FromPath": [
+                                "segment"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "country",
+                            "FromPath": [
+                                "country"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "city",
+                            "FromPath": [
+                                "city"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "state",
+                            "FromPath": [
+                                "state"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "postal_code",
+                            "FromPath": [
+                                "postal code"
+                            ],
+                            "FromType": "long",
+                            "ToType": "long",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "region",
+                            "FromPath": [
+                                "region"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "product_id",
+                            "FromPath": [
+                                "product id"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "category",
+                            "FromPath": [
+                                "category"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "sub_category",
+                            "FromPath": [
+                                "sub-category"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "product_name",
+                            "FromPath": [
+                                "product name"
+                            ],
+                            "FromType": "string",
+                            "ToType": "string",
+                            "Dropped": false
+                        },
+                        {
+                            "ToKey": "sales",
+                            "FromPath": [
+                                "sales"
+                            ],
+                            "FromType": "double",
+                            "ToType": "double",
+                            "Dropped": false
+                        }
+                    ]
+                }
+            }
+        },
+        "ExecutionClass": "STANDARD"
+    }
+}
