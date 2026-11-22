@@ -20,3 +20,14 @@ Laboratorio: 197976
 - (b) Formato das datas: dd/mm/yyyy. Justificativa: e acordo com o item do ID 14 conseguimos identificar que as colunas Order Date e Ship Date estão seguindo a ordem dia, mês e ano. 
 - (c) Linhas sem código postal: 11 linhas. 
 - (d) Exemplo de produto com vírgula: "Hon Deluxe Fabric Upholstered Stacking Chairs, Rounded Back". Explicação: A vírgula não separa colunas pois o nome do produto está delimitado por aspas duplas
+
+### Enunciado 4 — Regras do Grupo de Segurança do RDS 
+Regra 1 (Porta 5432 / Meu IP): Permite conexões externas diretas ao PostgreSQL a partir do IP autorizado (ex.: conexões via psql no CloudShell ou clientes SQL locais). Sintoma de ausência: Tentativas de conexão externa ficam travadas em timeout (tempo limite esgotado) sem conseguir alcançar o banco.
+Regra 2 (Porta 5432 / Próprio Security Group): Autoriza o tráfego interno dentro da VPC entre recursos que compartilham o mesmo Security Group (como os endpoints de interface e o AWS Glue). Sintoma de ausência: O teste de conexão JDBC do AWS Glue 
+ 
+
+ ### Enunciado 6 — Endpoints da VPC
+O Amazon S3 utiliza um endpoint Gateway porque permite o acesso privado aos buckets por meio das tabelas de rotas da VPC, sem necessidade de NAT Gateway e sem custo adicional pelo endpoint.
+O AWS STS e o Secrets Manager utilizam endpoints Interface porque disponibilizam seus serviços por meio de interfaces de rede privadas dentro da VPC, utilizando AWS PrivateLink.
+O DNS privado permite que os endereços habituais desses serviços sejam resolvidos para os endereços IP privados dos endpoints.
+Se o DNS privado estiver desabilitado, o job do AWS Glue poderá tentar acessar os endpoints públicos. Como a rede do projeto não utiliza NAT Gateway, essas chamadas poderão falhar por falta de conectividade, impedindo a obtenção de credenciais temporárias ou o acesso às credenciais do banco.
