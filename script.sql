@@ -314,3 +314,112 @@ $$;
 -- fact_sales    |   9800
 -- (5 rows)
 
+-- ENUNCIADO 15
+CREATE TABLE IF NOT EXISTS dw.carga_log (
+    log_id SERIAL PRIMARY KEY,
+    sale_sk INTEGER NOT NULL,
+    row_nk INTEGER NOT NULL,
+    operacao VARCHAR(10) NOT NULL,
+    usuario VARCHAR(100) NOT NULL,
+    momento TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE OR REPLACE FUNCTION dw.audita_fact_sales()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF NEW.sales <= 0 THEN
+        RAISE EXCEPTION
+            'row_nk %: sales deve ser maior que zero (valor=%)',
+            NEW.row_nk, NEW.sales;
+    END IF;
+
+    IF NEW.ship_days < 0 THEN
+        RAISE EXCEPTION
+            'row_nk %: ship_days nao pode ser negativo (dias=%)',
+            NEW.row_nk, NEW.ship_days;
+    END IF;
+
+    INSERT INTO dw.carga_log (
+        sale_sk, row_nk, operacao, usuario, momento
+    )
+    VALUES (
+        NEW.sale_sk, NEW.row_nk, TG_OP,
+        CURRENT_USER, CLOCK_TIMESTAMP()
+    );
+
+    RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_audita_fact_sales
+ON dw.fact_sales;
+
+CREATE TRIGGER trg_audita_fact_sales
+BEFORE INSERT ON dw.fact_sales
+FOR EACH ROW
+EXECUTE FUNCTION dw.audita_fact_sales();
+
+INSERT INTO dw.fact_sales (
+    row_nk, order_nk, order_date_sk, ship_date_sk,
+    customer_sk, product_sk, location_sk, ship_mode_sk,
+    sales, ship_days
+)
+SELECT
+    -1, 'TESTE-TRIGGER',
+    order_date_sk, ship_date_sk,
+    customer_sk, product_sk,
+    location_sk, ship_mode_sk,
+    sales, ship_days
+FROM dw.fact_sales
+WHERE sales > 0
+  AND ship_days >= 0
+  AND NOT EXISTS (
+      SELECT 1
+      FROM dw.fact_sales
+      WHERE row_nk = -1
+  )
+ORDER BY sale_sk
+LIMIT 1;
+
+SELECT COUNT(*) AS testes_validos_registrados
+FROM dw.carga_log
+WHERE row_nk = -1;
+
+-- Teste de inválido
+INSERT INTO dw.fact_sales (
+    row_nk, order_nk, order_date_sk, ship_date_sk,
+    customer_sk, product_sk, location_sk, ship_mode_sk,
+    sales, ship_days
+)
+SELECT
+    -2,
+    'TESTE-INVALIDO',
+    order_date_sk,
+    ship_date_sk,
+    customer_sk,
+    product_sk,
+    location_sk,
+    ship_mode_sk,
+    -1.00,
+    ship_days
+FROM dw.fact_sales
+ORDER BY sale_sk
+LIMIT 1;
+-- ERROR: row_nk -2: sales deve ser maior que zero (valor=-1.00)
+
+TRUNCATE TABLE dw.carga_log RESTART IDENTITY;
+
+CALL dw.carrega_dw();
+
+SELECT
+    (SELECT COUNT(*) FROM dw.fact_sales) AS linhas_fato,
+    (SELECT COUNT(*) FROM dw.carga_log) AS linhas_log,
+    CASE
+        WHEN (SELECT COUNT(*) FROM dw.fact_sales) =
+             (SELECT COUNT(*) FROM dw.carga_log)
+        THEN 'OK'
+        ELSE 'DIVERGENTE'
+    END AS auditoria;
+
