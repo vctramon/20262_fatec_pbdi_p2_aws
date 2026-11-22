@@ -423,3 +423,245 @@ SELECT
         ELSE 'DIVERGENTE'
     END AS auditoria;
 
+-- Resposta do Enunciado 15
+-- linhas_fato | linhas_log | auditoria 
+-------------+------------+-----------
+--    9800    |    9800    |      OK
+--(1 row)
+
+-- Enunciado 16
+-- Mostre, para cada região e categoria, a quantidade de pedidos distintos, a quantidade de itens
+-- vendidos e a receita, da maior para a menor receita.
+SELECT
+
+ dl.region,
+
+ dp.category,
+
+ COUNT(DISTINCT fs.order_nk) AS pedidos_distintos,
+
+ COUNT(*) AS itens_vendidos,
+
+ SUM(fs.sales) AS receita
+
+FROM dw.fact_sales fs
+
+JOIN dw.dim_location dl
+
+ ON dl.location_sk = fs.location_sk
+
+JOIN dw.dim_product dp
+
+ ON dp.product_sk = fs.product_sk
+
+GROUP BY
+
+ dl.region,
+
+ dp.category
+
+ORDER BY
+
+ receita DESC;
+ 
+ -- resposta
+ superstore_dw->  receita DESC;
+region  |    category     | pedidos_distintos | itens_vendidos |  receita  
+---------+-----------------+-------------------+----------------+-----------
+East    | Technology      |               436 |            527 | 263116.59
+West    | Technology      |               483 |            589 | 247404.95
+West    | Furniture       |               582 |            691 | 245348.36
+West    | Office Supplies |              1150 |           1860 | 217466.46
+East    | Furniture       |               480 |            591 | 206461.36
+East    | Office Supplies |              1048 |           1667 | 199940.90
+Central | Technology      |               348 |            408 | 168739.19
+Central | Office Supplies |               865 |           1399 | 163590.15
+Central | Furniture       |               393 |            470 | 160317.56
+South   | Technology      |               252 |            289 | 148195.21
+South   | Office Supplies |               613 |            983 | 124424.77
+South   | Furniture       |               272 |            326 | 116531.47
+(12 rows)
+
+-- Enunciado 17
+-- Mostre, para cada modalidade de envio, a quantidade de itens, a média de ship_days
+-- arredondada para uma casa decimal e o menor e o maior valor de ship_days, da menor
+-- para a maior média.
+SELECT
+ dsm.ship_mode,
+ COUNT(*) AS quantidade_itens,
+ ROUND(AVG(fs.ship_days)::NUMERIC, 1) AS media_ship_days,
+ MIN(fs.ship_days) AS menor_ship_days,
+ MAX(fs.ship_days) AS maior_ship_days
+FROM dw.fact_sales fs
+JOIN dw.dim_ship_mode dsm
+ ON dsm.ship_mode_sk = fs.ship_mode_sk
+GROUP BY
+ dsm.ship_mode
+ORDER BY
+ media_ship_days ASC;
+
+
+--resposta 
+    ship_mode    | quantidade_itens | media_ship_days | menor_ship_days | maior_ship_days 
+
+----------------+------------------+-----------------+-----------------+-----------------
+
+Same Day       |              538 |             0.0 |               0 |               1
+
+First Class    |             1501 |             2.2 |               1 |               4
+
+Second Class   |             1902 |             3.2 |               1 |               5
+
+Standard Class |             5859 |             5.0 |               3 |               7
+
+(4 rows)
+ 
+ -- Enunciado 18
+-- Usando a dw.dim_date, mostre, por ano e mês, em ordem cronológica: a receita do mês, a
+-- receita acumulada no ano (reiniciando a cada ano) e a diferença percentual em relação ao mês
+-- anterior, arredondada para uma casa decimal.
+WITH receita_mensal AS (
+ SELECT
+   dd.year,
+   dd.month,
+   SUM(fs.sales) AS receita_mes
+ FROM dw.fact_sales fs
+ JOIN dw.dim_date dd
+   ON dd.date_sk = fs.order_date_sk
+ GROUP BY
+   dd.year,
+   dd.month
+)
+SELECT
+ year,
+ month,
+ receita_mes,
+ SUM(receita_mes) OVER (
+   PARTITION BY year
+   ORDER BY month
+   ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+ ) AS receita_acumulada_ano,
+ ROUND(
+   (
+     (receita_mes - LAG(receita_mes) OVER (ORDER BY year, month))
+     / NULLIF(LAG(receita_mes) OVER (ORDER BY year, month), 0)
+   ) * 100,
+   1
+ ) AS variacao_pct_mes_anterior
+FROM receita_mensal
+ORDER BY
+ year,
+ month;
+
+ -- resposta 
+ year | month | receita_mes | receita_acumulada_ano | variacao_pct_mes_anterior 
+
+------+-------+-------------+-----------------------+---------------------------
+
+2015 |     1 |    14205.71 |              14205.71 |                          
+
+2015 |     2 |     4519.92 |              18725.63 |                     -68.2
+
+2015 |     3 |    55205.83 |              73931.46 |                    1121.4
+
+2015 |     4 |    27906.86 |             101838.32 |                     -49.4
+
+2015 |     5 |    23644.30 |             125482.62 |                     -15.3
+
+2015 |     6 |    34322.94 |             159805.56 |                      45.2
+
+2015 |     7 |    33781.52 |             193587.08 |                      -1.6
+
+2015 |     8 |    27117.53 |             220704.61 |                     -19.7
+
+2015 |     9 |    81623.52 |             302328.13 |                     201.0
+
+2015 |    10 |    31453.37 |             333781.50 |                     -61.5
+
+2015 |    11 |    77907.69 |             411689.19 |                     147.7
+
+2015 |    12 |    68167.08 |             479856.27 |                     -12.5
+
+2016 |     1 |    18066.96 |              18066.96 |                     -73.5
+
+2016 |     2 |    11951.40 |              30018.36 |                     -33.8
+
+2016 |     3 |    32339.32 |              62357.68 |                     170.6
+
+2016 |     4 |    34154.51 |              96512.19 |                       5.6
+
+2016 |     5 |    29959.56 |             126471.75 |                     -12.3
+
+2016 |     6 |    23599.39 |             150071.14 |                     -21.2
+
+2016 |     7 |    28608.25 |             178679.39 |                      21.2
+
+2016 |     8 |    36818.33 |             215497.72 |                      28.7
+
+2016 |     9 |    63133.56 |             278631.28 |                      71.5
+
+2016 |    10 |    31011.71 |             309642.99 |                     -50.9
+ 
+
+ -- Enunciado 19
+-- Mostre os dez clientes com maior receita: identificação ou nome, segmento, receita,
+-- quantidade de pedidos distintos, ticket médio por pedido e percentual sobre a receita total
+-- da fato.
+SELECT
+ dc.customer_id,
+ dc.customer_name,
+ dc.segment,
+ SUM(fs.sales) AS receita,
+ COUNT(DISTINCT fs.order_nk) AS pedidos_distintos,
+ ROUND((SUM(fs.sales) / NULLIF(COUNT(DISTINCT fs.order_nk), 0))::NUMERIC, 2) AS ticket_medio_pedido,
+ ROUND(
+   ((SUM(fs.sales) / NULLIF(SUM(SUM(fs.sales)) OVER (), 0)) * 100)::NUMERIC,
+   2
+ ) AS pct_receita_total
+FROM dw.fact_sales fs
+JOIN dw.dim_customer dc
+ ON dc.customer_sk = fs.customer_sk
+GROUP BY
+ dc.customer_id,
+ dc.customer_name,
+ dc.segment
+ORDER BY
+ receita DESC
+LIMIT 10;
+
+-- resposta 
+customer_id |   customer_name    |   segment   | receita  | pedidos_distintos | ticket_medio_pedido | pct_receita_total 
+
+-------------+--------------------+-------------+----------+-------------------+---------------------+-------------------
+
+SM-20320    | Sean Miller        | Home Office | 25043.07 |                 5 |             5008.61 |              1.11
+
+TC-20980    | Tamara Chand       | Corporate   | 19052.22 |                 5 |             3810.44 |              0.84
+
+RB-19360    | Raymond Buch       | Consumer    | 15117.35 |                 6 |             2519.56 |              0.67
+
+TA-21385    | Tom Ashbrook       | Home Office | 14595.62 |                 4 |             3648.91 |              0.65
+
+AB-10105    | Adrian Barton      | Consumer    | 14473.57 |                10 |             1447.36 |              0.64
+
+KL-16645    | Ken Lonsdale       | Consumer    | 14175.23 |                12 |             1181.27 |              0.63
+
+SC-20095    | Sanjit Chand       | Consumer    | 14142.34 |                 9 |             1571.37 |              0.63
+
+HL-15040    | Hunter Lopez       | Consumer    | 12873.30 |                 6 |             2145.55 |              0.57
+
+SE-20110    | Sanjit Engle       | Consumer    | 12209.44 |                11 |             1109.95 |              0.54
+
+CC-12370    | Christopher Conant | Consumer    | 12129.08 |                 5 |             2425.82 |              0.54
+
+(10 rows)
+ 
+-- Enunciado 20
+-- Com o script.sql completo, execute-o inteiro sobre uma base limpa, usando o script de
+-- execução fornecido na aula, e rode novamente a coleta de evidências. Registre em
+-- comentário no script.sql a confirmação de que a execução ocorreu sem erros e quantas
+-- linhas havia na tabela fato ao final.
+
+-- Execucao final:
+-- Status: executado do inicio ao fim sem erros.
+-- Total de linhas em dw.fact_sales ao final: 9800
